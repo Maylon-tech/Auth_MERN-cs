@@ -1,5 +1,6 @@
-import User from "../models/authModels"
+import User from "../models/authModels.js"
 import bcryptjs from "bcryptjs"
+import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js"
 
 
 export const SignUp = async (req, res) => {
@@ -16,7 +17,10 @@ export const SignUp = async (req, res) => {
         }
 
         const hashedPassword = await bcryptjs.hash(password, 10)
+
+        // JWT
         const verificationToken = Math.floor(100000 + Math.random() * 900000).toString()
+
         const user = new User({
             email,
             password: hashedPassword,
@@ -26,6 +30,17 @@ export const SignUp = async (req, res) => {
         })
         await user.save()
 
+
+        generateTokenAndSetCookie(res, user._id)
+
+        res.status(201).json({
+            success: true,
+            message: "User created successfully",
+            user: {
+                ...user._doc,
+                password: undefined,
+            },
+        })
     } catch (error) {
         res.status(400).json({ success: false, message: error.message })
     }

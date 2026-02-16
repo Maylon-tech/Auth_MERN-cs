@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
 
-
-const authSchema = new mongoose.Schema(
+const authSchema = mongoose.Schema(
     {
         name: {
             type: String,
@@ -14,11 +13,11 @@ const authSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: true        
+            required: true,
         },
         lastLogin: {
             type: Date,
-            default: Date.now
+            default: false
         },
         isVerified: {
             type: Boolean,
