@@ -12,6 +12,7 @@ export const SignUp = async (req, res) => {
         }
 
         const userAlreadyExists = await User.findOne({ email })
+        console.log("userAlreadyExist", userAlreadyExists)
         if (userAlreadyExists) {
             return res.status(400).json({success: false, message: "User already exists" })
         }
@@ -26,11 +27,9 @@ export const SignUp = async (req, res) => {
             password: hashedPassword,
             name,
             verificationToken,
-            verificationTokenExpireAt: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
+            verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
         })
         await user.save()
-
-
         generateTokenAndSetCookie(res, user._id)
 
         res.status(201).json({

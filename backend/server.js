@@ -15,6 +15,6 @@ app.use("/api/auth", authRoutes)
 
 app.listen(PORT, () => {
     connectDB()
-    console.log("Server running on port 5000", PORT)
+    console.log("Server running on port", PORT)
 })
 

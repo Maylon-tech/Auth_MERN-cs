@@ -1,13 +1,13 @@
 import mongoose from 'mongoose'
 
-const authSchema = mongoose.Schema(
+const authSchema = new mongoose.Schema(
     {
         name: {
             type: String,
             required: true
         },
         email:  {
-            Type: String,
+            type: String,
             required: true,
             unique: true
         },
@@ -17,7 +17,7 @@ const authSchema = mongoose.Schema(
         },
         lastLogin: {
             type: Date,
-            default: false
+            default: Date.now
         },
         isVerified: {
             type: Boolean,

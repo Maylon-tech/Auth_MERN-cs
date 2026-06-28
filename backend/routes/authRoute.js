@@ -7,12 +7,12 @@ import {
 
 const router = express.Router()
 
-router.get("/signup", SignUp)
+router.post("/signup", SignUp)
 
-router.get("/login", Login)
+router.post("/login", Login)
 
 
-router.get("/logout", Logout)
+router.post("/logout", Logout)
 
 
 export default router
