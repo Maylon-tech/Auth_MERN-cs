@@ -1,6 +1,7 @@
 import User from "../models/authModels.js"
 import bcryptjs from "bcryptjs"
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js"
+import { sendVerificationEmail } from "../mailtrap/emails.js"
 
 
 export const SignUp = async (req, res) => {
@@ -31,6 +32,9 @@ export const SignUp = async (req, res) => {
         })
         await user.save()
         generateTokenAndSetCookie(res, user._id)
+
+        // Send Verification Email
+        sendVerificationEmail(user.email, verificationToken)
 
         res.status(201).json({
             success: true,
