@@ -4,7 +4,7 @@ import crypto from 'crypto'
 import User from "../models/authModels.js"
 
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js"
-import { sendVerificationEmail } from "../mailtrap/emails.js"
+import { sendPasswordResetEmail, sendResetSuccessEmail, sendVerificationEmail } from "../mailtrap/emails.js"
 
 
 export const SignUp = async (req, res) => {
@@ -147,11 +147,49 @@ export const forgotPassword = async (req, res) => {
 
         await user.save()
 
+        // send email
+        await sendPasswordResetEmail(user.email, `${process.env.CLIENT_URL}/reset-password/${resetToken}`)
+
+        res.status(200).json({
+            success: true,
+            message: "Password reset link sent to your email.",
+        })
+
     } catch (error) {   
-        console.log("Can not access Reset Modal", error)
+        console.log("Error in ForgotPassword", error)
         res.status(400).json(({ success: false, message: error.message }))
     }
 
 }
 
+export const resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params
+        const { password } = req.body
+        
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpiresAt: { $gt: Date.now() }
+        })
 
+        if (!user) {
+            return res.status(400).json({ success: false, message: "Invalid or expired reset token" })
+        }
+
+        // update password
+        const hashedPassword = await bcryptjs.hash(password, 10)
+        
+        user.password = hashedPassword
+        user.resetPasswordToken = undefined
+        user.resetPasswordExpiresAt = undefined
+        await user.save()
+
+        await sendResetSuccessEmail(user.email)
+
+        res.status(200).json({ success: true, message: "Password reset successfully"})
+    } catch (error) {
+        console.log("Error in resetPassword", error)
+        res.status(400).json({ success: false, message: error.message })
+    }
+}
+ 
