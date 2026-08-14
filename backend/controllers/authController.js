@@ -37,7 +37,7 @@ export const SignUp = async (req, res) => {
         generateTokenAndSetCookie(res, user._id)
 
         // Send Verification Email
-        await sendVerificationEmail(user.email, verificationToken)
+        // await sendVerificationEmail(user.email, verificationToken)
 
         res.status(201).json({
             success: true,
@@ -74,7 +74,7 @@ export const Login = async (req, res) => {
             success: true,
             message: "Logged in Successfully.",
             user: {
-                ...user._id,
+                ...user._doc,
                 password: undefined,
             },
         })
@@ -140,8 +140,9 @@ export const forgotPassword = async (req, res) => {
 
         // Generate Reset Token
         const resetToken = crypto.randomBytes(20).toString("hex")
-        const resetTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000  // 24 hours
+        const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000  // 24 hours
 
+        // DB model schema
         user.resetPasswordToken = resetToken
         user.resetPasswordExpiresAt = resetTokenExpiresAt
 
