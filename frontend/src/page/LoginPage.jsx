@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 const LoginPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const isLoading = true
 
   const handleLogin = (e) => {
     e.preventDefault()
@@ -27,8 +28,39 @@ const LoginPage = () => {
         </h2>
 
         <form>
-          <Input />
+          <Input 
+            icon={Mail}
+            type='email'
+            placeholder='Email Address'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <Input 
+            icon={Lock}
+            type='password'
+            placeholder='Set Password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <motion.div
+            className="w-full px-3 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            type='submit'
+          >
+            Login
+          </motion.div>
         </form>        
+      </div>
+      <div className="px-8 py-4 bg-gray-900 bg-opacity-50 flex justify-center">
+        <p className="text-sm text-gray-400">
+          Don&apos;t have an account?{" "}
+          <Link to='/signup' className='text-green-400 hover:underline'>
+            Sign Up
+          </Link>
+        </p>
       </div>
     </motion.div>
   )
