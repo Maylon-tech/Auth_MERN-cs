@@ -50,7 +50,9 @@ const LoginPage = () => {
             whileTap={{ scale: 0.98 }}
             type='submit'
           >
-            Login
+            {
+              isLoading ? <Loader className='w-6 h-6 animate-spin text-center mx-auto' /> : "Login"
+            }
           </motion.div>
         </form>        
       </div>
