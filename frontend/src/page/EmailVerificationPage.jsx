@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
-
-
+import { Loader } from "lucide-react"
 
 const EmailVerificationPage = () => {
-    const [code, setCode] = useState("", "", "", "", "", "")
+    const [code, setCode] = useState(Array(6).fill(""))
     const inputRefs = useRef([])
     const naviate = useNavigate()
     const isLoading = false
@@ -34,6 +33,7 @@ const EmailVerificationPage = () => {
             if (value && index < 5) {
                 inputRefs.current[index + 1].focus()
             }
+            
         }
     }
 
@@ -44,7 +44,7 @@ const EmailVerificationPage = () => {
     }
 
     const handleSubmit = (e) => {
-        e.preventDefault()
+        if (e && typeof e.preventDefault === 'function') e.preventDefault()
         const verificationCode = code.join("")
         alert(`Verification code submitted: ${verificationCode}`)
     }
@@ -57,8 +57,6 @@ const EmailVerificationPage = () => {
     }, [code])
 
 
-
-
   return (
     <div className="max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
       <motion.div
@@ -67,7 +65,7 @@ const EmailVerificationPage = () => {
         transition={{ duration: 0.5 }}
         className='bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-2xl p-8 w-full max-w-md'
     >
-        <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-500 text-transparent bg-clip-text">
+        <h2 className="text-3xl font-bold mb-6 text-center bg-linear-to-r from-green-400 to-emerald-500 text-transparent bg-clip-text">
             Verify Your Email
         </h2>
         <p className="text-center text-gray-300 mb-6">Enter the 6-digit code sent to  your email address.</p>
@@ -80,7 +78,7 @@ const EmailVerificationPage = () => {
                             type="text"
                             key={index}
                             ref={(elem) => (inputRefs.current[index] = elem)}
-                            maxLength='6'
+                            maxLength='1'
                             value={digit}
                             onChange={(e) => handleChange(index, e.target.value)}
                             onKeyDown={(e) => handleKeyDown(index, e)}
@@ -91,9 +89,9 @@ const EmailVerificationPage = () => {
                 }
             </div>
             <motion.button 
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 disabled:opacity-50"
+                className="w-full bg-linear-to-r from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 disabled:opacity-50"
             >
-                
+                { isLoading ? <Loader className="animate-spin mx-auto" size={24} /> : "Verify Email" }                
             </motion.button>
         </form>
     </motion.div>
