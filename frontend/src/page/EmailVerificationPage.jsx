@@ -2,12 +2,17 @@ import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Loader } from "lucide-react"
+import toast from "react-hot-toast"
+
+import { useAuthStore } from "../store/authStore"
 
 const EmailVerificationPage = () => {
     const [code, setCode] = useState(Array(6).fill(""))
     const inputRefs = useRef([])
     const naviate = useNavigate()
-    const isLoading = false
+    // const isLoading = false
+
+    const { error, isLoading, verifyEmail } = useAuthStore()
 
     const handleChange = (index, value) => {
         const newCode = [...code]
@@ -43,10 +48,18 @@ const EmailVerificationPage = () => {
         }
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         if (e && typeof e.preventDefault === 'function') e.preventDefault()
         const verificationCode = code.join("")
-        alert(`Verification code submitted: ${verificationCode}`)
+        
+        try {
+            await verifyEmail(verificationCode)
+            naviate("/dashboard")
+            toast.success("Email verified successfully!")
+        } catch(error) {
+            toast.error(error.response.data.message || "Error verifying email")
+            console.log(error)
+        }
     }
 
     // Auto submit when all fields are filled
@@ -94,6 +107,11 @@ const EmailVerificationPage = () => {
                 { isLoading ? <Loader className="animate-spin mx-auto" size={24} /> : "Verify Email" }                
             </motion.button>
         </form>
+
+        <button className="mt-4 w-full text-center text-sm text-gray-400 hover:text-gray-200 focus:outline-none">
+            Didn't receive the code? <span className="text-green-400 hover:text-green-300 cursor-pointer">Resend</span>
+        </button>
+        
     </motion.div>
     </div>
   )
